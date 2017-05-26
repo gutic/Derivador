@@ -112,7 +112,7 @@ namespace derive
 
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void panel1_Paint(object sender, PaintEventArgs e)      //dibujo el grafico + para la funcion
         {
             int xcentro = panel1.Width / 2;
             int ycentro = panel1.Height / 2;
