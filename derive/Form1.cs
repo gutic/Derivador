@@ -53,9 +53,6 @@ namespace derive
                     submono = mono[i];
                     parte = submono.Split(grado);   //separo por 'x' y '^' a monomio
                     TotalParte = parte.Length;
-                    MaxGrado = Convert.ToInt32(parte[1]);
-                    multi = Convert.ToInt32(parte[0]) * MaxGrado;
-                    string [] derive = new string[MaxGrado -1];
                     for (int p=0; p < TotalParte; p++)
                     {
 
@@ -65,22 +62,6 @@ namespace derive
                     MessageBox.Show("paso!");
                     
                 }
-
-                //foreach (string s in mono)
-                //{
-                    
-                    //for (int i = 0; i < cuanto; i++)
-                   // {
-                    //    MessageBox.Show("algo" + s[i]);
-                  //  }
-                    //foreach (string asd in parte)
-                    //{
-                    //    MessageBox.Show("La derivada es \n" + s[1]);
-                    //}
-                    //    
-
-
-                //}
                 
                 for (int i = 0; i < TotalMono; i++)
                 {
@@ -88,7 +69,8 @@ namespace derive
                         contador += 1;
                     }
 
-                    MessageBox.Show("La derivada es \n" + mono[i]); 
+                    MessageBox.Show("La derivada es \n" + mono[i]);
+                    MessageBox.Show("test formato" + formato(funcion));
                 }
                 //MessageBox.Show("La derivada es \n" + contador);
                 textBox2.Text = Convert.ToString(contador);
@@ -101,7 +83,26 @@ namespace derive
 
         }
         //private int algo = Math. 
-        
+        public string formato(string funcion)
+        {
+            string salir = "";
+            funcion = Convert.ToString(funcion);
+
+            int j = 0;
+            for (int i = 0; i < funcion.Length; i++)
+            {
+                if (funcion[i] == '-' || funcion[i] == '+' && i > 1)
+                {
+                    if (funcion[i - 1] != '^')
+                    {
+                        salir += funcion.Substring(j, i - 1) + " ";
+                        j = i;
+                    }
+                }
+            }
+            salir += funcion.Substring(j, funcion.Length - j);
+            return salir;
+        }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
