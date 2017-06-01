@@ -44,65 +44,186 @@ namespace derive
             else
             {
                 funcion = (textBox1.Text);
-                cuanto = funcion.Length; //cuantos caracteres tiene la funcion
-                string[] mono = funcion.Split(operadores); //le paso la cadena separada por + y -
-                TotalMono = mono.Length;
-                
-                for (int i=0; i < TotalMono;i++)
-                {                   
-                    submono = mono[i];
-                    parte = submono.Split(grado);   //separo por 'x' y '^' a monomio
-                    TotalParte = parte.Length;
-                    for (int p=0; p < TotalParte; p++)
-                    {
+                textBox2.Text = Convert.ToString(derivar(funcion));
 
-                        MessageBox.Show("probando" + parte[p]);
-                        
-                    }
-                    MessageBox.Show("paso!");
-                    
-                }
-                
-                for (int i = 0; i < TotalMono; i++)
-                {
-                    if (funcion[i] == 'a'){
-                        contador += 1;
-                    }
 
-                    MessageBox.Show("La derivada es \n" + mono[i]);
-                    MessageBox.Show("test formato" + formato(funcion));
-                }
-                //MessageBox.Show("La derivada es \n" + contador);
-                textBox2.Text = Convert.ToString(contador);
-                //formGraphics.DrawLine(Lapiz, 0, 100, 550, 100);
-                //formGraphics.DrawLine(Lapiz, 0, 100, 550, 100);
-                //double[] x = new double[1000];
-                //double[] y = new double[1000];
 
             }
 
         }
-        //private int algo = Math. 
+
+    
         public string formato(string funcion)
         {
             string salir = "";
-            funcion = Convert.ToString(funcion);
-
             int j = 0;
-            for (int i = 0; i < funcion.Length; i++)
+            for (int i = 0; i < funcion.Length -1; i++)
             {
-                if (funcion[i] == '-' || funcion[i] == '+' && i > 1)
+                if ((funcion[i] == '-' || funcion[i] == '+') && i > 0)
                 {
                     if (funcion[i - 1] != '^')
                     {
-                        salir += funcion.Substring(j, i - 1) + " ";
+                        salir += funcion.Substring(j, i - j) + " ";
                         j = i;
                     }
                 }
             }
             salir += funcion.Substring(j, funcion.Length - j);
             return salir;
+        }   //funciona
+
+        public string derivar(string funcion)
+        {
+            string salida = "";
+            string[] terminos;
+            string dx;
+            bool EsPositivo = true;
+            double potencia = 0, coeficiente = 0;
+            funcion = formato(funcion);
+            terminos = funcion.Split();
+            foreach (string termino in terminos)
+            {
+                    separar(termino,ref coeficiente,ref potencia,ref EsPositivo);
+                    dx = derivarTermino(coeficiente, potencia, EsPositivo);
+                    salida += dx;
+            }
+            if  (!(salida.Trim().Length > 0))
+            {
+                return "NoAnda";
+            }
+            if (salida[1] == '+')
+            {
+                return salida.Substring(3);
+            }
+            if (salida[1] == '-')
+            {
+                return Convert.ToString(salida[1]) + salida.Substring(3);
+            }
+            if (salida[0] == ' ')
+            {
+                return salida.Substring(1);
+            }
+            return salida;
         }
+        private void separar(string termino,ref double coeficiente,ref double potencia,ref bool EsPositivo)
+        {
+            int fincoeficiente = 0;
+            int inicio;
+            EsPositivo = true;
+            if (termino[0] == '-')
+            {
+                EsPositivo = false;
+                inicio = 1;
+            } 
+            else if (termino[0] == '+')
+            {
+                EsPositivo = true;
+                inicio = 1;
+            }
+            else
+            {
+                inicio = 0;
+            }
+            if(termino == Convert.ToString('x'))
+            {
+                coeficiente = 1;
+            }
+            else
+            {
+                for(int i=0;i< termino.Length -1; i++)
+                {
+                    if (!(char.IsNumber(termino[i])))
+                    {
+                        fincoeficiente = i - 1;
+                    }
+                }
+                string c;
+                if (fincoeficiente <= 0)
+                {
+                    c = termino.Substring(inicio, 1);
+                }
+                else if(inicio == 0)
+                {
+                    c = termino.Substring(inicio, fincoeficiente + 1);
+                }
+                else
+                {
+                    c = termino.Substring(inicio, fincoeficiente);
+                }
+            }
+            if (termino.IndexOf("^") >= 0 && termino.IndexOf("(") < 0)
+            {
+                potencia = Convert.ToInt32(termino.Substring(termino.IndexOf("^") + 1));
+            }
+            else if(termino.IndexOf("x") >=0 && termino.IndexOf("^") < 0)
+            {
+                potencia = 1;
+            }
+            else if(termino.IndexOf(")") >= 0)
+            {
+                string fraccion;
+                inicio = termino.IndexOf("(") + 1;
+                fraccion = termino.Substring(inicio, (termino.Length - inicio) - 1);
+                potencia = fraccionADecimal(fraccion);
+            }
+            else
+            {
+                potencia = 0;
+            }
+        }
+        private Single fraccionADecimal(string fraccion)
+        {
+            int primer, segundo;
+            primer = Convert.ToInt32(fraccion.Substring(0, fraccion.IndexOf('/')));
+            segundo = Convert.ToInt32(fraccion.Substring(fraccion.IndexOf('/') + 1));
+            return primer / segundo;
+        }
+        private string derivarTermino(double coeficiente, double potencia,bool EsPositivo)
+        {
+            string salida = "";
+            double termino;
+            if (!(EsPositivo))
+            {
+                if (potencia < 0)
+                {
+                    salida += " + ";
+                }
+                else
+                {
+                    salida += " - ";
+                }
+            }
+            else if (potencia >= 0)
+            {
+                salida += " + ";
+            }
+            else
+            {
+                salida += " - ";
+            }
+            termino = Math.Abs(coeficiente * potencia);
+            switch (potencia)
+            {
+                case 1:
+                    return salida + termino;
+                    
+                case 2:
+                    return salida + termino + "x";
+                case 0:
+                    return "";
+                default:
+                    if (termino != 1)
+                    {
+                        return salida + termino + "x^" + (potencia - 1);
+                    }
+                    else
+                    {
+                        return salida + "x^" + (potencia - 1);
+                    }
+            }
+        }
+
+            
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -119,8 +240,9 @@ namespace derive
             int ycentro = panel1.Height / 2;
             e.Graphics.TranslateTransform(xcentro, ycentro);
             e.Graphics.ScaleTransform(1, - 1);
-            e.Graphics.DrawLine(Lapiz, xcentro * -1, 0, xcentro * 2, 0); //ejex
+            //e.Graphics.DrawLine(Lapiz, xcentro * -1, 0, xcentro * 2, 0); //ejex
             e.Graphics.DrawLine(Lapiz, 0, ycentro, 0, ycentro * -1); // ejey
+           
         }
 
        
