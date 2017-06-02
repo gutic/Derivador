@@ -19,7 +19,6 @@ namespace derive
         public int cuanto;
         public int contador = 0;
         public int TotalMono = 0;
-        public char[] operadores = { '+', '-' };
         public char[] grado = { 'x', '^' };
         private object formGraphics;
         public string submono;
@@ -44,10 +43,8 @@ namespace derive
             else
             {
                 funcion = (textBox1.Text);
+ 
                 textBox2.Text = Convert.ToString(derivar(funcion));
-
-
-
             }
 
         }
@@ -89,7 +86,7 @@ namespace derive
             }
             if  (!(salida.Trim().Length > 0))
             {
-                return "NoAnda";
+                return "0";
             }
             if (salida[1] == '+')
             {
@@ -126,7 +123,7 @@ namespace derive
             }
             if(termino == Convert.ToString('x'))
             {
-                coeficiente = 1;
+                coeficiente = 1; //cuento numero de coeficientes
             }
             else
             {
@@ -134,7 +131,7 @@ namespace derive
                 {
                     if (!(char.IsNumber(termino[i])))
                     {
-                        fincoeficiente = i - 1;
+                        fincoeficiente = i - 1; //veo donde termina el coeficiente
                         break;
                     }
                 }
@@ -162,15 +159,15 @@ namespace derive
                 {
                     if (Convert.ToString(c) != string.Empty)
                     {
-                        MessageBox.Show(c);
+                        //MessageBox.Show(c);
                         double valor;
                         double.TryParse(c, out valor);
-                        MessageBox.Show(Convert.ToString(valor));
+                        //MessageBox.Show(Convert.ToString(valor));
                         coeficiente = valor;
                     }
                 }
             }
-            
+            //saco la potencia
             if (termino.IndexOf("^") >= 0 && termino.IndexOf("(") < 0)
             {
                 potencia = Convert.ToInt32(termino.Substring(termino.IndexOf("^") + 1));
@@ -179,7 +176,8 @@ namespace derive
             {
                 potencia = 1;
             }
-            else if(termino.IndexOf(")") >= 0)
+            //fraccion no funciona, retorno//
+            else if (termino.IndexOf(")") >= 0) 
             {
                 string fraccion;
                 inicio = termino.IndexOf("(") + 1;
@@ -194,8 +192,9 @@ namespace derive
         private Single fraccionADecimal(string fraccion)
         {
             int primer, segundo;
-            primer = Convert.ToInt32(fraccion.Substring(0, fraccion.IndexOf('/')));
-            segundo = Convert.ToInt32(fraccion.Substring(fraccion.IndexOf('/') + 1));
+            primer = Convert.ToInt32(fraccion.Substring(0, fraccion.IndexOf("/")));
+            segundo = Convert.ToInt32(fraccion.Substring(fraccion.IndexOf("/") + 1));
+            MessageBox.Show(Convert.ToString(primer / segundo));
             return primer / segundo;
         }
         private string derivarTermino(double coeficiente, double potencia,bool EsPositivo)
@@ -242,9 +241,6 @@ namespace derive
                     }
             }
         }
-
-            
-
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
@@ -260,11 +256,19 @@ namespace derive
             int ycentro = panel1.Height / 2;
             e.Graphics.TranslateTransform(xcentro, ycentro);
             e.Graphics.ScaleTransform(1, - 1);
-            //e.Graphics.DrawLine(Lapiz, xcentro * -1, 0, xcentro * 2, 0); //ejex
+            e.Graphics.DrawLine(Lapiz, xcentro * -1, 0, xcentro * 2, 0); //ejex
             e.Graphics.DrawLine(Lapiz, 0, ycentro, 0, ycentro * -1); // ejey
            
         }
 
-       
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
