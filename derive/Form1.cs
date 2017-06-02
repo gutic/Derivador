@@ -135,22 +135,42 @@ namespace derive
                     if (!(char.IsNumber(termino[i])))
                     {
                         fincoeficiente = i - 1;
+                        break;
                     }
                 }
                 string c;
                 if (fincoeficiente <= 0)
                 {
                     c = termino.Substring(inicio, 1);
+                    
                 }
                 else if(inicio == 0)
                 {
                     c = termino.Substring(inicio, fincoeficiente + 1);
+                    
                 }
                 else
                 {
                     c = termino.Substring(inicio, fincoeficiente);
+                    
+                }
+                if (c == Convert.ToString('x') || c.Length == 0)
+                {
+                    coeficiente = 1;
+                }
+                else
+                {
+                    if (Convert.ToString(c) != string.Empty)
+                    {
+                        MessageBox.Show(c);
+                        double valor;
+                        double.TryParse(c, out valor);
+                        MessageBox.Show(Convert.ToString(valor));
+                        coeficiente = valor;
+                    }
                 }
             }
+            
             if (termino.IndexOf("^") >= 0 && termino.IndexOf("(") < 0)
             {
                 potencia = Convert.ToInt32(termino.Substring(termino.IndexOf("^") + 1));
