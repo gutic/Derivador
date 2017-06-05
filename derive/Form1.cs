@@ -221,7 +221,7 @@ namespace derive
                 salida += " - ";
             }
             termino = Math.Abs(coeficiente * potencia);
-            switch (potencia)
+            switch (Convert.ToInt32(potencia))
             {
                 case 1:
                     return salida + termino;
